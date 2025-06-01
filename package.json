@@ -1,0 +1,38 @@
+{
+  "name": "mcp-svg-to-font",
+  "version": "1.0.0",
+  "description": "MCP Server para generar fuentes desde archivos SVG",
+  "main": "./main.ts",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsx main.ts",
+    "build": "tsc"
+  },
+  "keywords": [
+    "mcp",
+    "svg",
+    "font",
+    "icons"
+  ],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.11.0",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "fs-extra": "^11.2.0",
+    "glob": "^11.0.0",
+    "path": "^0.12.7",
+    "svg2ttf": "^6.0.3",
+    "ttf2woff": "^3.0.0",
+    "ttf2woff2": "^7.0.0",
+    "webfont": "^11.2.26",
+    "zod": "^3.25.36"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^22.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0"
+  }
+}

@@ -1,0 +1,58 @@
+# Dependencias
+node_modules/
+.pnpm-store/
+
+# Archivos de construcción y distribución
+dist/
+build/
+*.tsbuildinfo
+
+# Archivos de entorno
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Directorios de caché
+.npm/
+.pnpm/
+.cache/
+.eslintcache
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Directorios y archivos del editor
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+*.sublime-project
+*.sublime-workspace
+
+# Testing
+coverage/
+
+# Archivos temporales
+*.tmp
+*.temp
+.tmp/
+.temp/
+
+# Archivos generados automáticamente
+*.generated.*
+
+# Archivos específicos del proyecto (opcional)
+# config.local.js
