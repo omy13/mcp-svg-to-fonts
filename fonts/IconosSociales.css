@@ -1,0 +1,28 @@
+
+@font-face {
+    font-family: 'IconosSociales';
+    src: url('./IconosSociales.woff2') format('woff2'),
+         url('./IconosSociales.woff') format('woff'),
+         url('./IconosSociales.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.icono {
+    font-family: 'IconosSociales';
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icono-explorer:before { content: "\ea02"; }
+.icono-instagram:before { content: "\ea01"; }
+.icono-premiere:before { content: "\ea03"; }
+.icono-typescript:before { content: "\ea04"; }
+.icono-whatsapp:before { content: "\ea05"; }
+.icono-docker:before { content: "\ea07"; }
+.icono-imdb:before { content: "\ea06"; }
