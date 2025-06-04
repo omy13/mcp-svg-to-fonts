@@ -1,13 +1,16 @@
 {
   "name": "mcp-svg-to-font",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "MCP Server para generar fuentes desde archivos SVG",
   "main": "./main.ts",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsx main.ts",
-    "build": "tsc"
+    "dev": "tsx src/main.ts",
+    "build": "tsc",
+    "start": "node dist/main.js",
+    "clean": "rm -rf dist",
+    "build:watch": "tsc --watch",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "mcp",
