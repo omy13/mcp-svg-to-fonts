@@ -67,8 +67,7 @@ Add this configuration to your MCP client (e.g., Claude Desktop):
   "mcpServers": {
     "svg-to-font": {
       "command": "npx",
-      "args": ["tsx", "src/main.ts"],
-      "cwd": "/path/to/mcp-svg-to-font"
+      "args": ["tsx", "src/main.ts"]
     }
   }
 }
@@ -81,8 +80,7 @@ For production (compiled version):
   "mcpServers": {
     "svg-to-font": {
       "command": "node",
-      "args": ["./dist/main.js"],
-      "cwd": "/path/to/mcp-svg-to-font"
+      "args": ["./dist/main.js"]
     }
   }
 }
