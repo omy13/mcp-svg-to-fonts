@@ -65,9 +65,9 @@ pnpm build
 ```json
 {
   "mcpServers": {
-    "svg-to-font": {
+    "mcp-svg-to-fonts": {
       "command": "npx",
-      "args": ["-y", "svg-to-font"]
+      "args": ["-y", "mcp-svg-to-fonts"]
     }
   }
 }
