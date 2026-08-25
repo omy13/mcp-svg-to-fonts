@@ -4,7 +4,7 @@ import { FontConfig } from '../types/font.js';
 import { generateAdvancedFont } from '../services/font-generator.js';
 import { findSvgFiles } from '../services/file-handler.js';
 import { extractGlyphsFromTTF, mapGlyphNamesWithCSS } from '../services/glyph-extractor.js';
-import { generateCSS, generateTypeScript } from '../services/template-generator.js';
+import { saveFontOutput } from '../services/font-output.js';
 import fs from 'fs-extra';
 import * as path from 'path';
 
@@ -27,23 +27,13 @@ export function registerExtendFontAdvancedTool(server: McpServer): void {
       try {
         if (!(await fs.pathExists(existingFontDir))) {
           return {
-            content: [
-              {
-                type: 'text',
-                text: `❌ Existing font directory ${existingFontDir} does not exist`,
-              },
-            ],
+            content: [{ type: 'text', text: `❌ Existing font directory ${existingFontDir} does not exist` }],
           };
         }
 
         if (!(await fs.pathExists(newSvgDirectory))) {
           return {
-            content: [
-              {
-                type: 'text',
-                text: `❌ New SVG directory ${newSvgDirectory} does not exist`,
-              },
-            ],
+            content: [{ type: 'text', text: `❌ New SVG directory ${newSvgDirectory} does not exist` }],
           };
         }
 
@@ -53,12 +43,7 @@ export function registerExtendFontAdvancedTool(server: McpServer): void {
 
         if (!cssFile) {
           return {
-            content: [
-              {
-                type: 'text',
-                text: `❌ No CSS file found in ${existingFontDir}`,
-              },
-            ],
+            content: [{ type: 'text', text: `❌ No CSS file found in ${existingFontDir}` }],
           };
         }
 
@@ -97,12 +82,7 @@ export function registerExtendFontAdvancedTool(server: McpServer): void {
 
         if (newSvgFiles.length === 0) {
           return {
-            content: [
-              {
-                type: 'text',
-                text: `❌ No SVG files found in ${newSvgDirectory}`,
-              },
-            ],
+            content: [{ type: 'text', text: `❌ No SVG files found in ${newSvgDirectory}` }],
           };
         }
 
@@ -131,45 +111,7 @@ export function registerExtendFontAdvancedTool(server: McpServer): void {
         };
 
         const result = await generateAdvancedFont(mappedGlyphs, newSvgFiles, config, fontMetadata);
-        const savedFiles: string[] = [];
-
-        if (result.woff2) {
-          const woff2Path = path.join(outputDir, `${fontName}.woff2`);
-          await fs.writeFile(woff2Path, result.woff2);
-          savedFiles.push(woff2Path);
-        }
-
-        if (result.woff) {
-          const woffPath = path.join(outputDir, `${fontName}.woff`);
-          await fs.writeFile(woffPath, result.woff);
-          savedFiles.push(woffPath);
-        }
-
-        if (result.ttf) {
-          const ttfPath = path.join(outputDir, `${fontName}.ttf`);
-          await fs.writeFile(ttfPath, result.ttf);
-          savedFiles.push(ttfPath);
-        }
-
-        const allGlyphs = [
-          ...mappedGlyphs,
-          ...newSvgFiles.map((file) => ({
-            metadata: { path: file },
-          })),
-        ];
-
-        const css = generateCSS(config, result.glyphsData || []);
-        const newCssPath = path.join(outputDir, `${fontName}.css`);
-        await fs.writeFile(newCssPath, css);
-        savedFiles.push(newCssPath);
-
-        if (generateTypes && result.glyphsData) {
-          const typescript = generateTypeScript(config, result.glyphsData);
-          const tsPath = path.join(outputDir, `${fontName}.types.ts`);
-          await fs.writeFile(tsPath, typescript);
-          savedFiles.push(tsPath);
-        }
-
+        const savedFiles = await saveFontOutput(result, config, { generateTypes });
         const totalIconCount = mappedGlyphs.length + newSvgFiles.length;
 
         const report = `✅ Font extended successfully with preserved glyphs!
@@ -209,21 +151,11 @@ ${newIconNames.map((name) => `   • ${cssPrefix}-${name}`).join('\n')}
 ⚠️  Existing projects using this font will continue to work without changes.`;
 
         return {
-          content: [
-            {
-              type: 'text',
-              text: report,
-            },
-          ],
+          content: [{ type: 'text', text: report }],
         };
       } catch (error) {
         return {
-          content: [
-            {
-              type: 'text',
-              text: `❌ Error: ${error}`,
-            },
-          ],
+          content: [{ type: 'text', text: `❌ Error: ${error}` }],
         };
       }
     }
