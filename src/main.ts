@@ -6,7 +6,7 @@ import { registerAllTools } from './tools/index.js';
 async function main() {
   const server = new McpServer({
     name: 'SVG-to-Font',
-    version: '1.3.0',
+    version: '1.3.1',
     description: 'MCP server for generating fonts from SVG files',
   });
 

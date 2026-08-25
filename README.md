@@ -22,8 +22,8 @@ A Model Context Protocol (MCP) server for generating and managing icon fonts fro
 1. **Clone the repository:**
 
 ```bash
-git clone <repository-url>
-cd mcp-svg-to-font
+git clone https://github.com/omy13/mcp-svg-to-fonts.git
+cd mcp-svg-to-fonts
 ```
 
 2. **Install dependencies:**
@@ -67,7 +67,7 @@ pnpm build
   "mcpServers": {
     "svg-to-font": {
       "command": "npx",
-      "args": ["-y", "mcp-svg-to-font"]
+      "args": ["-y", "svg-to-font"]
     }
   }
 }
