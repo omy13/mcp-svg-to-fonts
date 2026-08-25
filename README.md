@@ -60,7 +60,20 @@ pnpm build
 
 ## 🔧 MCP Configuration
 
-Add this configuration to your MCP client (e.g., Claude Desktop):
+**After publishing to npm** (recommended):
+
+```json
+{
+  "mcpServers": {
+    "svg-to-font": {
+      "command": "npx",
+      "args": ["-y", "mcp-svg-to-font"]
+    }
+  }
+}
+```
+
+**From a local clone** (development):
 
 ```json
 {
@@ -73,7 +86,7 @@ Add this configuration to your MCP client (e.g., Claude Desktop):
 }
 ```
 
-For production (compiled version):
+**From a local build** (production):
 
 ```json
 {

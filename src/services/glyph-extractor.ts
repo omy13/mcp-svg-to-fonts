@@ -1,6 +1,9 @@
 import fs from 'fs-extra';
 import opentype from 'opentype.js';
-import { ExtractedGlyph, FontMetadata } from '../types/glyph';
+import { ExtractedGlyph, FontMetadata } from '../types/glyph.js';
+
+/** Matches `.prefix-icon-name:before { content: "\\e001"; }` — prefix is a single word, icon name may contain hyphens. */
+const ICON_CSS_REGEX = /\.(\w+)-([\w-]+):before\s*\{\s*content:\s*"\\([0-9a-fA-F]+)"/g;
 
 export async function extractGlyphsFromTTF(fontPath: string): Promise<FontMetadata> {
   try {
@@ -48,21 +51,19 @@ export async function mapGlyphNamesWithCSS(extractedGlyphs: ExtractedGlyph[], cs
     const cssContent = await fs.readFile(cssPath, 'utf8');
     const iconMap = new Map<number, string>();
 
-    const iconRegex = /\.([\w-]+)-([\w-]+):before\s*{\s*content:\s*"\\([0-9a-fA-F]+)"/g;
-    let match;
+    let match: RegExpExecArray | null;
+    const regex = new RegExp(ICON_CSS_REGEX.source, 'g');
 
-    while ((match = iconRegex.exec(cssContent)) !== null) {
-      const [, prefix, iconName, unicodeHex] = match;
+    while ((match = regex.exec(cssContent)) !== null) {
+      const [, , iconName, unicodeHex] = match;
       const unicode = parseInt(unicodeHex, 16);
       iconMap.set(unicode, iconName);
     }
 
-    const mappedGlyphs = extractedGlyphs.map((glyph) => ({
+    return extractedGlyphs.map((glyph) => ({
       ...glyph,
       name: iconMap.get(glyph.unicode) || glyph.name,
     }));
-
-    return mappedGlyphs;
   } catch (error) {
     throw new Error(`Error mapping glyph names with CSS: ${error}`);
   }

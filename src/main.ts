@@ -1,11 +1,12 @@
+#!/usr/bin/env node
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { registerAllTools } from './tools';
+import { registerAllTools } from './tools/index.js';
 
 async function main() {
   const server = new McpServer({
     name: 'SVG-to-Font',
-    version: '1.2.0',
+    version: '1.3.0',
     description: 'MCP server for generating fonts from SVG files',
   });
 
@@ -18,4 +19,7 @@ async function main() {
 process.on('SIGINT', () => process.exit(0));
 process.on('SIGTERM', () => process.exit(0));
 
-main().catch(() => process.exit(1));
+main().catch((error) => {
+  console.error('Failed to start MCP server:', error);
+  process.exit(1);
+});

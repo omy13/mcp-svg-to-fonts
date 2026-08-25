@@ -1,11 +1,10 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
-import { FontConfig } from '../types/font';
-import { generateFont } from '../services/font-generator';
-import { findSvgFiles } from '../services/file-handler';
-import { generateCSS, generateTypeScript } from '../services/template-generator';
+import { FontConfig } from '../types/font.js';
+import { generateFont } from '../services/font-generator.js';
+import { findSvgFiles } from '../services/file-handler.js';
+import { getIconNamesFromGlyphs, saveFontOutput } from '../services/font-output.js';
 import fs from 'fs-extra';
-import * as path from 'path';
 
 const generateFontSchema = z.object({
   directory: z.string().describe('Directory containing SVG files'),
@@ -25,12 +24,7 @@ export function registerGenerateFontTool(server: McpServer): void {
       try {
         if (!(await fs.pathExists(directory))) {
           return {
-            content: [
-              {
-                type: 'text',
-                text: `❌ Directory ${directory} does not exist`,
-              },
-            ],
+            content: [{ type: 'text', text: `❌ Directory ${directory} does not exist` }],
           };
         }
 
@@ -38,12 +32,7 @@ export function registerGenerateFontTool(server: McpServer): void {
 
         if (svgFiles.length === 0) {
           return {
-            content: [
-              {
-                type: 'text',
-                text: `❌ No SVG files found in ${directory}`,
-              },
-            ],
+            content: [{ type: 'text', text: `❌ No SVG files found in ${directory}` }],
           };
         }
 
@@ -57,39 +46,8 @@ export function registerGenerateFontTool(server: McpServer): void {
         };
 
         const result = await generateFont(svgFiles, config);
-        const savedFiles: string[] = [];
-
-        if (result.woff2) {
-          const woff2Path = path.join(outputDir, `${fontName}.woff2`);
-          await fs.writeFile(woff2Path, result.woff2);
-          savedFiles.push(woff2Path);
-        }
-
-        if (result.woff) {
-          const woffPath = path.join(outputDir, `${fontName}.woff`);
-          await fs.writeFile(woffPath, result.woff);
-          savedFiles.push(woffPath);
-        }
-
-        if (result.ttf) {
-          const ttfPath = path.join(outputDir, `${fontName}.ttf`);
-          await fs.writeFile(ttfPath, result.ttf);
-          savedFiles.push(ttfPath);
-        }
-
-        const css = generateCSS(config, result.glyphsData || []);
-        const cssPath = path.join(outputDir, `${fontName}.css`);
-        await fs.writeFile(cssPath, css);
-        savedFiles.push(cssPath);
-
-        if (generateTypes && result.glyphsData) {
-          const typescript = generateTypeScript(config, result.glyphsData);
-          const tsPath = path.join(outputDir, `${fontName}.types.ts`);
-          await fs.writeFile(tsPath, typescript);
-          savedFiles.push(tsPath);
-        }
-
-        const iconNames = result.glyphsData?.map((glyph: any) => path.basename(glyph.metadata?.path || '', '.svg')) || [];
+        const savedFiles = await saveFontOutput(result, config, { generateTypes });
+        const iconNames = getIconNamesFromGlyphs(result.glyphsData);
 
         const report = `✅ Font generated successfully!
 
@@ -111,21 +69,11 @@ ${iconNames.map((name) => `   • ${cssPrefix}-${name}`).join('\n')}
 <link rel="stylesheet" href="${outputDir}/${fontName}.css">`;
 
         return {
-          content: [
-            {
-              type: 'text',
-              text: report,
-            },
-          ],
+          content: [{ type: 'text', text: report }],
         };
       } catch (error) {
         return {
-          content: [
-            {
-              type: 'text',
-              text: `❌ Error: ${error}`,
-            },
-          ],
+          content: [{ type: 'text', text: `❌ Error: ${error}` }],
         };
       }
     }

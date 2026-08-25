@@ -1,4 +1,4 @@
-import { FontConfig, ExistingIcon } from '../types/font';
+import { FontConfig, ExistingIcon } from '../types/font.js';
 import * as path from 'path';
 
 export function generateCSS(config: FontConfig, glyphs: any[], existingIcons?: ExistingIcon[]): string {

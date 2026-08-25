@@ -1,2 +1,2 @@
-export * from './font';
-export * from './glyph';
+export * from './font.js';
+export * from './glyph.js';

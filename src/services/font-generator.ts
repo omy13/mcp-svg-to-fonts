@@ -1,9 +1,9 @@
 import { webfont } from 'webfont';
 import fs from 'fs-extra';
 
-import { FontConfig } from '../types/font';
-import { ExtractedGlyph, FontMetadata } from '../types/glyph';
-import { createTempSVGsFromGlyphs } from '../utils/svg-utils';
+import { FontConfig } from '../types/font.js';
+import { ExtractedGlyph, FontMetadata } from '../types/glyph.js';
+import { createTempSVGsFromGlyphs } from '../utils/svg-utils.js';
 import * as path from 'path';
 
 export async function generateFont(svgFiles: string[], config: FontConfig, unicodeMap?: Map<string, string>) {
@@ -11,7 +11,7 @@ export async function generateFont(svgFiles: string[], config: FontConfig, unico
     const webfontConfig: any = {
       files: svgFiles,
       fontName: config.fontName,
-      formats: ['woff', 'woff2', 'ttf'],
+      formats: config.formats.length > 0 ? config.formats : ['woff', 'woff2', 'ttf'],
       fontHeight: 1000,
       normalize: true,
       centerHorizontally: true,
@@ -64,7 +64,7 @@ export async function generateAdvancedFont(existingGlyphs: ExtractedGlyph[], new
     const webfontConfig: any = {
       files: allSvgFiles,
       fontName: config.fontName,
-      formats: ['woff', 'woff2', 'ttf'],
+      formats: config.formats.length > 0 ? config.formats : ['woff', 'woff2', 'ttf'],
       fontHeight: fontMetadata.unitsPerEm || 1000,
       normalize: true,
       centerHorizontally: true,

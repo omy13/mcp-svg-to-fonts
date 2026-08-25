@@ -1,7 +1,10 @@
 import { glob } from 'glob';
 import fs from 'fs-extra';
-import { ExistingIcon } from '../types/font';
+import { ExistingIcon } from '../types/font.js';
 import * as path from 'path';
+
+/** Matches `.prefix-icon-name:before { content: "\\e001"; }` — prefix is a single word, icon name may contain hyphens. */
+const ICON_CSS_REGEX = /\.(\w+)-([\w-]+):before\s*\{\s*content:\s*"\\([0-9a-fA-F]+)"/g;
 
 export async function findSvgFiles(directory: string): Promise<string[]> {
   try {
@@ -13,16 +16,16 @@ export async function findSvgFiles(directory: string): Promise<string[]> {
   }
 }
 
-export async function parseExistingFont(fontPath: string, cssPath: string): Promise<ExistingIcon[]> {
+export async function parseExistingFont(cssPath: string): Promise<ExistingIcon[]> {
   try {
     const cssContent = await fs.readFile(cssPath, 'utf8');
     const icons: ExistingIcon[] = [];
 
-    const iconRegex = new RegExp(`\\.(\\w+)-(\\w+):before\\s*{\\s*content:\\s*"\\\\([0-9a-fA-F]+)"`, 'g');
-    let match;
+    let match: RegExpExecArray | null;
+    const regex = new RegExp(ICON_CSS_REGEX.source, 'g');
 
-    while ((match = iconRegex.exec(cssContent)) !== null) {
-      const [, prefix, iconName, unicode] = match;
+    while ((match = regex.exec(cssContent)) !== null) {
+      const [, , iconName, unicode] = match;
       icons.push({
         name: iconName,
         unicode: String.fromCharCode(parseInt(unicode, 16)),
