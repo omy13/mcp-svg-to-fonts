@@ -31,7 +31,10 @@
     "glyphs",
     "typography"
   ],
-  "author": "omy13",
+  "author": {
+    "name": "Omar Jimenez",
+    "url": "https://omarjs.com"
+  },
   "license": "ISC",
   "repository": {
     "type": "git",
