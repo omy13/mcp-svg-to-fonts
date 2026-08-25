@@ -1,6 +1,6 @@
 {
   "name": "mcp-svg-to-font",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "MCP Server para generar fuentes desde archivos SVG",
   "main": "./dist/main.js",
   "bin": {
@@ -8,7 +8,8 @@
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "type": "module",
   "engines": {
@@ -30,8 +31,16 @@
     "glyphs",
     "typography"
   ],
-  "author": "",
+  "author": "omy13",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/omy13/mcp-svg-to-fonts.git"
+  },
+  "bugs": {
+    "url": "https://github.com/omy13/mcp-svg-to-fonts/issues"
+  },
+  "homepage": "https://github.com/omy13/mcp-svg-to-fonts#readme",
   "packageManager": "pnpm@10.11.0",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.1",
