@@ -80,8 +80,7 @@ pnpm build
   "mcpServers": {
     "svg-to-font": {
       "command": "npx",
-      "args": ["tsx", "src/main.ts"],
-      "cwd": "/path/to/mcp-svg-to-font"
+      "args": ["tsx", "src/main.ts"]
     }
   }
 }
@@ -94,8 +93,7 @@ pnpm build
   "mcpServers": {
     "svg-to-font": {
       "command": "node",
-      "args": ["./dist/main.js"],
-      "cwd": "/path/to/mcp-svg-to-font"
+      "args": ["./dist/main.js"]
     }
   }
 }
