@@ -1,5 +1,8 @@
 # MCP SVG to Font
 
+[![npm version](https://img.shields.io/npm/v/mcp-svg-to-fonts.svg)](https://www.npmjs.com/package/mcp-svg-to-fonts)
+[![license: ISC](https://img.shields.io/badge/license-ISC-blue.svg)](LICENSE)
+
 A Model Context Protocol (MCP) server for generating and managing icon fonts from SVG files. This tool provides comprehensive font generation capabilities with backward compatibility and advanced glyph extraction features.
 
 ## ✨ Features
@@ -15,52 +18,14 @@ A Model Context Protocol (MCP) server for generating and managing icon fonts fro
 ## 📋 Prerequisites
 
 - **Node.js**: 20.x or later
-- **pnpm**: 10.x or later (recommended)
 
-## 🚀 Installation
+## 🚀 Quick Start (npm)
 
-1. **Clone the repository:**
+The easiest way to use this MCP server is via [npm](https://www.npmjs.com/package/mcp-svg-to-fonts). No clone or build required.
 
-```bash
-git clone https://github.com/omy13/mcp-svg-to-fonts.git
-cd mcp-svg-to-fonts
-```
+### 1. Add to your MCP client
 
-2. **Install dependencies:**
-
-```bash
-pnpm install
-```
-
-3. **Build the project:**
-
-```bash
-pnpm build
-```
-
-## 🛠️ Development
-
-### Development Mode
-
-```bash
-pnpm dev
-```
-
-### Testing with MCP Inspector
-
-```bash
-npx @modelcontextprotocol/inspector npx tsx src/main.ts
-```
-
-### Build for Production
-
-```bash
-pnpm build
-```
-
-## 🔧 MCP Configuration
-
-**After publishing to npm** (recommended):
+**Cursor** — add to `.cursor/mcp.json` or global MCP settings:
 
 ```json
 {
@@ -73,7 +38,61 @@ pnpm build
 }
 ```
 
-**From a local clone** (development):
+**Claude Desktop** — add to `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "mcp-svg-to-fonts": {
+      "command": "npx",
+      "args": ["-y", "mcp-svg-to-fonts"]
+    }
+  }
+}
+```
+
+### 2. Verify it works
+
+```bash
+npx -y mcp-svg-to-fonts
+```
+
+The server starts and waits on stdio — that means it's ready. Stop it with `Ctrl+C`.
+
+### 3. Use it in your project
+
+Point the MCP tools at a folder with your SVG icons. For example, ask your AI assistant:
+
+> "Generate an icon font from the SVGs in `./src/assets/icons` and output to `./fonts`"
+
+The server exposes 4 tools: `list-svgs`, `generate-font-from-svgs`, `extend-existing-font`, and `extend-font-advanced`.
+
+## 🛠️ Development
+
+For contributing or local development you need **pnpm** 10.x.
+
+### Clone and build
+
+```bash
+git clone https://github.com/omy13/mcp-svg-to-fonts.git
+cd mcp-svg-to-fonts
+pnpm install
+pnpm build
+```
+
+### Development mode
+
+```bash
+pnpm dev
+```
+
+### Testing with MCP Inspector
+
+```bash
+npx @modelcontextprotocol/inspector npx tsx src/main.ts
+```
+
+### Local MCP config (without npm)
 
 ```json
 {
@@ -87,7 +106,7 @@ pnpm build
 }
 ```
 
-**From a local build** (production):
+Or with the compiled build:
 
 ```json
 {
