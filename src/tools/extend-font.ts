@@ -1,10 +1,10 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
-import { FontConfig, ExistingIcon } from '../types/font.js';
-import { generateFont } from '../services/font-generator';
-import { findSvgFiles, parseExistingFont } from '../services/file-handler';
-import { generateCSS, generateTypeScript } from '../services/template-generator';
-import { getNextUnicodeValue } from '../utils/unicode-utils';
+import { FontConfig } from '../types/font.js';
+import { generateFont } from '../services/font-generator.js';
+import { findSvgFiles, parseExistingFont } from '../services/file-handler.js';
+import { generateCSS, generateTypeScript } from '../services/template-generator.js';
+import { getNextUnicodeValue } from '../utils/unicode-utils.js';
 import fs from 'fs-extra';
 import * as path from 'path';
 
@@ -82,11 +82,11 @@ export function registerExtendFontTool(server: McpServer): void {
           outputDir = existingFontDir;
         }
 
-        const existingIcons = await parseExistingFont(path.join(existingFontDir, `${fontName}.ttf`), cssPath);
+        const existingIcons = await parseExistingFont(cssPath);
 
         if (!cssPrefix && existingIcons.length > 0) {
-          const cssContent = await import('fs-extra').then((fs) => fs.readFile(cssPath, 'utf8'));
-          const prefixMatch = cssContent.match(/\.([\w-]+)-[\w-]+:before/);
+          const cssContent = await fs.readFile(cssPath, 'utf8');
+          const prefixMatch = cssContent.match(/\.(\w+)-[\w-]+:before/);
           cssPrefix = prefixMatch ? prefixMatch[1] : 'icon';
         } else if (!cssPrefix) {
           cssPrefix = 'icon';

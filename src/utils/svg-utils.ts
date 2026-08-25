@@ -1,4 +1,4 @@
-import { ExtractedGlyph } from '../types/glyph';
+import { ExtractedGlyph } from '../types/glyph.js';
 import fs from 'fs-extra';
 import * as path from 'path';
 

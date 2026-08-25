@@ -1,4 +1,4 @@
-import { ExistingIcon } from '../types/font';
+import { ExistingIcon } from '../types/font.js';
 
 export function getNextUnicodeValue(existingIcons: ExistingIcon[]): number {
   if (existingIcons.length === 0) {

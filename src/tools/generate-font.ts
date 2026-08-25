@@ -1,9 +1,9 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
-import { FontConfig } from '../types/font';
-import { generateFont } from '../services/font-generator';
-import { findSvgFiles } from '../services/file-handler';
-import { generateCSS, generateTypeScript } from '../services/template-generator';
+import { FontConfig } from '../types/font.js';
+import { generateFont } from '../services/font-generator.js';
+import { findSvgFiles } from '../services/file-handler.js';
+import { generateCSS, generateTypeScript } from '../services/template-generator.js';
 import fs from 'fs-extra';
 import * as path from 'path';
 

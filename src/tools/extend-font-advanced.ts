@@ -1,11 +1,10 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
-import { FontConfig } from '../types/font';
-import { ExtractedGlyph, FontMetadata } from '../types/glyph';
-import { generateAdvancedFont } from '../services/font-generator';
-import { findSvgFiles } from '../services/file-handler';
-import { extractGlyphsFromTTF, mapGlyphNamesWithCSS } from '../services/glyph-extractor';
-import { generateCSS, generateTypeScript } from '../services/template-generator';
+import { FontConfig } from '../types/font.js';
+import { generateAdvancedFont } from '../services/font-generator.js';
+import { findSvgFiles } from '../services/file-handler.js';
+import { extractGlyphsFromTTF, mapGlyphNamesWithCSS } from '../services/glyph-extractor.js';
+import { generateCSS, generateTypeScript } from '../services/template-generator.js';
 import fs from 'fs-extra';
 import * as path from 'path';
 
@@ -90,7 +89,7 @@ export function registerExtendFontAdvancedTool(server: McpServer): void {
 
         if (!cssPrefix) {
           const cssContent = await fs.readFile(cssPath, 'utf8');
-          const prefixMatch = cssContent.match(/\.([\w-]+)-[\w-]+:before/);
+          const prefixMatch = cssContent.match(/\.(\w+)-[\w-]+:before/);
           cssPrefix = prefixMatch ? prefixMatch[1] : 'icon';
         }
 

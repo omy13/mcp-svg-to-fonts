@@ -1,6 +1,6 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
-import { findSvgFiles } from '../services/file-handler';
+import { findSvgFiles } from '../services/file-handler.js';
 import fs from 'fs-extra';
 import * as path from 'path';
 
