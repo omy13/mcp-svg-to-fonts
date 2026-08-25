@@ -78,9 +78,10 @@ pnpm build
 ```json
 {
   "mcpServers": {
-    "svg-to-font": {
+    "mcp-svg-to-fonts": {
       "command": "npx",
-      "args": ["tsx", "src/main.ts"]
+      "args": ["tsx", "src/main.ts"],
+      "cwd": "/path/to/mcp-svg-to-fonts"
     }
   }
 }
@@ -91,9 +92,10 @@ pnpm build
 ```json
 {
   "mcpServers": {
-    "svg-to-font": {
+    "mcp-svg-to-fonts": {
       "command": "node",
-      "args": ["./dist/main.js"]
+      "args": ["./dist/main.js"],
+      "cwd": "/path/to/mcp-svg-to-fonts"
     }
   }
 }
