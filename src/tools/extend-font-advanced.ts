@@ -5,15 +5,16 @@ import { generateAdvancedFont } from '../services/font-generator.js';
 import { findSvgFiles } from '../services/file-handler.js';
 import { extractGlyphsFromTTF, mapGlyphNamesWithCSS } from '../services/glyph-extractor.js';
 import { saveFontOutput } from '../services/font-output.js';
+import { findUnsafeNames, SAFE_NAME_REGEX, SAFE_PREFIX_REGEX } from '../utils/name-utils.js';
 import fs from 'fs-extra';
 import * as path from 'path';
 
 const extendFontAdvancedSchema = z.object({
   existingFontDir: z.string().describe('Directory containing existing font files (.css and .ttf files)'),
   newSvgDirectory: z.string().describe('Directory containing new SVG files to add'),
-  fontName: z.string().optional().describe('Font name (will be detected from existing files if not provided)'),
+  fontName: z.string().regex(SAFE_NAME_REGEX).optional().describe('Font name (will be detected from existing files if not provided)'),
   outputDir: z.string().optional().describe('Output directory (default: same as existing font)'),
-  cssPrefix: z.string().optional().describe('CSS class prefix (will be detected from existing CSS if not provided)'),
+  cssPrefix: z.string().regex(SAFE_PREFIX_REGEX).optional().describe('CSS class prefix (will be detected from existing CSS if not provided)'),
   generateTypes: z.boolean().optional().describe('Generate TypeScript types (default: true)'),
   preserveMetrics: z.boolean().optional().describe('Preserve original font metrics (default: true)'),
 });
@@ -88,6 +89,14 @@ export function registerExtendFontAdvancedTool(server: McpServer): void {
 
         const existingIconNames = mappedGlyphs.map((glyph) => glyph.name);
         const newIconNames = newSvgFiles.map((file) => path.basename(file, '.svg'));
+        const unsafeNames = findUnsafeNames([fontName, ...newIconNames]);
+
+        if (unsafeNames.length > 0) {
+          return {
+            content: [{ type: 'text', text: `❌ Invalid font or SVG file names: ${unsafeNames.join(', ')}. Use only letters, numbers, "-" and "_".` }],
+          };
+        }
+
         const conflicts = newIconNames.filter((name) => existingIconNames.includes(name));
 
         if (conflicts.length > 0) {

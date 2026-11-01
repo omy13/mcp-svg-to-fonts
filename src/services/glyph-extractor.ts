@@ -1,6 +1,7 @@
 import fs from 'fs-extra';
 import opentype from 'opentype.js';
 import { ExtractedGlyph, FontMetadata } from '../types/glyph.js';
+import { toSafeName } from '../utils/name-utils.js';
 
 /** Matches `.prefix-icon-name:before { content: "\\e001"; }` — prefix is a single word, icon name may contain hyphens. */
 const ICON_CSS_REGEX = /\.(\w+)-([\w-]+):before\s*\{\s*content:\s*"\\([0-9a-fA-F]+)"/g;
@@ -8,7 +9,7 @@ const ICON_CSS_REGEX = /\.(\w+)-([\w-]+):before\s*\{\s*content:\s*"\\([0-9a-fA-F
 export async function extractGlyphsFromTTF(fontPath: string): Promise<FontMetadata> {
   try {
     const fontBuffer = await fs.readFile(fontPath);
-    const font = opentype.parse(fontBuffer.buffer);
+    const font = opentype.parse(fontBuffer.buffer.slice(fontBuffer.byteOffset, fontBuffer.byteOffset + fontBuffer.byteLength));
 
     const extractedGlyphs: ExtractedGlyph[] = [];
 
@@ -18,7 +19,8 @@ export async function extractGlyphsFromTTF(fontPath: string): Promise<FontMetada
       if (glyph.unicode !== undefined && glyph.unicode > 32) {
         const pathData = glyph.path ? glyph.path.toPathData(10) : undefined;
 
-        let glyphName = glyph.name || `glyph_${glyph.unicode}`;
+        // Glyph names come from the font file itself and are later used as file names, so sanitize them.
+        let glyphName = toSafeName(glyph.name || `glyph_${glyph.unicode}`);
 
         if (glyphName.startsWith('uni') && glyphName.length === 7) {
           glyphName = `icon_${glyph.unicode.toString(16)}`;

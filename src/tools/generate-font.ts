@@ -4,14 +4,16 @@ import { FontConfig } from '../types/font.js';
 import { generateFont } from '../services/font-generator.js';
 import { findSvgFiles } from '../services/file-handler.js';
 import { getIconNamesFromGlyphs, saveFontOutput } from '../services/font-output.js';
+import { findUnsafeNames, SAFE_NAME_REGEX, SAFE_PREFIX_REGEX } from '../utils/name-utils.js';
 import fs from 'fs-extra';
+import * as path from 'path';
 
 const generateFontSchema = z.object({
   directory: z.string().describe('Directory containing SVG files'),
-  fontName: z.string().optional().describe('Font name (default: "IconFont")'),
+  fontName: z.string().regex(SAFE_NAME_REGEX).optional().describe('Font name (default: "IconFont")'),
   outputDir: z.string().optional().describe('Output directory (default: "./fonts")'),
-  formats: z.array(z.string()).optional().describe('Font formats to generate'),
-  cssPrefix: z.string().optional().describe('CSS class prefix (default: "icon")'),
+  formats: z.array(z.enum(['woff2', 'woff', 'ttf'])).optional().describe('Font formats to generate'),
+  cssPrefix: z.string().regex(SAFE_PREFIX_REGEX).optional().describe('CSS class prefix (default: "icon")'),
   generateTypes: z.boolean().optional().describe('Generate TypeScript types (default: true)'),
 });
 
@@ -33,6 +35,14 @@ export function registerGenerateFontTool(server: McpServer): void {
         if (svgFiles.length === 0) {
           return {
             content: [{ type: 'text', text: `❌ No SVG files found in ${directory}` }],
+          };
+        }
+
+        const unsafeNames = findUnsafeNames(svgFiles.map((file) => path.basename(file, '.svg')));
+
+        if (unsafeNames.length > 0) {
+          return {
+            content: [{ type: 'text', text: `❌ Invalid SVG file names: ${unsafeNames.join(', ')}. Use only letters, numbers, "-" and "_".` }],
           };
         }
 

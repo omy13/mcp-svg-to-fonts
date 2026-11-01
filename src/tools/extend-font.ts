@@ -5,6 +5,7 @@ import { generateFont } from '../services/font-generator.js';
 import { findSvgFiles, parseExistingFont } from '../services/file-handler.js';
 import { getIconNamesFromGlyphs, saveFontOutput } from '../services/font-output.js';
 import { getNextUnicodeValue } from '../utils/unicode-utils.js';
+import { findUnsafeNames, SAFE_NAME_REGEX, SAFE_PREFIX_REGEX } from '../utils/name-utils.js';
 import fs from 'fs-extra';
 import * as path from 'path';
 
@@ -12,9 +13,9 @@ const extendFontSchema = z.object({
   existingFontDir: z.string().describe('Directory containing existing font files (.css and font files)'),
   originalSvgDirectory: z.string().describe('Directory containing the original SVG files used to create the existing font'),
   newSvgDirectory: z.string().describe('Directory containing new SVG files to add'),
-  fontName: z.string().optional().describe('Font name (will be detected from existing files if not provided)'),
+  fontName: z.string().regex(SAFE_NAME_REGEX).optional().describe('Font name (will be detected from existing files if not provided)'),
   outputDir: z.string().optional().describe('Output directory (default: same as existing font)'),
-  cssPrefix: z.string().optional().describe('CSS class prefix (will be detected from existing CSS if not provided)'),
+  cssPrefix: z.string().regex(SAFE_PREFIX_REGEX).optional().describe('CSS class prefix (will be detected from existing CSS if not provided)'),
   generateTypes: z.boolean().optional().describe('Generate TypeScript types (default: true)'),
 });
 
@@ -89,6 +90,13 @@ export function registerExtendFontTool(server: McpServer): void {
         const existingIconNames = existingIcons.map((icon) => icon.name);
         const newIconNames = newSvgFiles.map((file) => path.basename(file, '.svg'));
         const originalIconNames = originalSvgFiles.map((file) => path.basename(file, '.svg'));
+        const unsafeNames = findUnsafeNames([fontName, ...originalIconNames, ...newIconNames]);
+
+        if (unsafeNames.length > 0) {
+          return {
+            content: [{ type: 'text', text: `❌ Invalid font or SVG file names: ${unsafeNames.join(', ')}. Use only letters, numbers, "-" and "_".` }],
+          };
+        }
 
         const conflicts = newIconNames.filter((name) => existingIconNames.includes(name));
 
