@@ -25,6 +25,9 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      # Build before publishing: npm validates "bin" before prepublishOnly runs and drops it if dist/main.js is missing
+      - run: pnpm run build
+
       # npmjs.com via Trusted Publishing (OIDC): no token or 2FA code needed, provenance is added automatically
       - run: npm publish --access public
 
