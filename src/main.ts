@@ -1,12 +1,15 @@
 #!/usr/bin/env node
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { createRequire } from 'module';
 import { registerAllTools } from './tools/index.js';
+
+const { version } = createRequire(import.meta.url)('../package.json');
 
 async function main() {
   const server = new McpServer({
     name: 'SVG-to-Font',
-    version: '1.3.2',
+    version,
     description: 'MCP server for generating fonts from SVG files',
   });
 

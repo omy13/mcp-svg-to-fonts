@@ -4,6 +4,7 @@ import fs from 'fs-extra';
 import { FontConfig } from '../types/font.js';
 import { ExtractedGlyph, FontMetadata } from '../types/glyph.js';
 import { createTempSVGsFromGlyphs } from '../utils/svg-utils.js';
+import * as os from 'os';
 import * as path from 'path';
 
 export async function generateFont(svgFiles: string[], config: FontConfig, unicodeMap?: Map<string, string>) {
@@ -37,9 +38,9 @@ export async function generateFont(svgFiles: string[], config: FontConfig, unico
 }
 
 export async function generateAdvancedFont(existingGlyphs: ExtractedGlyph[], newSvgFiles: string[], config: FontConfig, fontMetadata: FontMetadata): Promise<any> {
-  try {
-    const tempDir = path.join(config.outputDir, '.temp_glyphs');
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'mcp-svg-to-fonts-'));
 
+  try {
     const existingGlyphSVGs = await createTempSVGsFromGlyphs(existingGlyphs, tempDir, fontMetadata.unitsPerEm);
 
     const allSvgFiles = [...existingGlyphSVGs, ...newSvgFiles];
@@ -81,10 +82,10 @@ export async function generateAdvancedFont(existingGlyphs: ExtractedGlyph[], new
 
     const result = await webfont(webfontConfig);
 
-    await fs.remove(tempDir);
-
     return result;
   } catch (error) {
     throw new Error(`Error generating advanced font: ${error}`);
+  } finally {
+    await fs.remove(tempDir);
   }
 }
