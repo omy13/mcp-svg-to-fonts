@@ -1,6 +1,7 @@
 # MCP SVG to Font
 
 [![npm version](https://img.shields.io/npm/v/mcp-svg-to-fonts.svg)](https://www.npmjs.com/package/mcp-svg-to-fonts)
+[![node](https://img.shields.io/node/v/mcp-svg-to-fonts.svg)](https://nodejs.org)
 [![license: ISC](https://img.shields.io/badge/license-ISC-blue.svg)](LICENSE)
 
 A Model Context Protocol (MCP) server for generating and managing icon fonts from SVG files. This tool provides comprehensive font generation capabilities with backward compatibility and advanced glyph extraction features.
@@ -17,7 +18,7 @@ A Model Context Protocol (MCP) server for generating and managing icon fonts fro
 
 ## 📋 Prerequisites
 
-- **Node.js**: 20.x or later
+- **Node.js**: 22.x or later (developed and tested on Node.js 26 LTS)
 
 ## 🚀 Quick Start (npm)
 
@@ -153,7 +154,7 @@ Or with the compiled build:
 - `directory` (string, required): Directory containing SVG files
 - `fontName` (string, optional): Font family name (default: "IconFont")
 - `outputDir` (string, optional): Output directory (default: "./fonts")
-- `formats` (array, optional): Font formats to generate (default: ["woff2", "woff", "ttf"])
+- `formats` (array, optional): Font formats to generate: any of `"woff2"`, `"woff"`, `"ttf"` (default: all three)
 - `cssPrefix` (string, optional): CSS class prefix (default: "icon")
 - `generateTypes` (boolean, optional): Generate TypeScript types (default: true)
 
@@ -342,6 +343,18 @@ const Icon: React.FC<IconProps> = ({ name, className = '' }) => {
 
 ## ⚠️ Important Notes
 
+### Naming Rules
+
+Names are written into file paths, CSS selectors and generated TypeScript, so they are validated:
+
+| Name | Allowed characters | Example |
+| --- | --- | --- |
+| SVG file names (icon names) | letters, numbers, `-`, `_` | `arrow-left.svg` |
+| `fontName` | letters, numbers, `-`, `_` | `MyIcons` |
+| `cssPrefix` | letters, numbers, `_` (no `-`) | `icon` |
+
+Files with spaces, dots or other characters (e.g. `arrow left.svg`) are rejected with an error listing them. Rename them before generating the font.
+
 ### Font Extension Requirements
 
 - **For `extend-existing-font`**: Requires original SVG files
@@ -380,6 +393,10 @@ Your CSS file must include Unicode mappings in this format:
 - Verify directory path
 - Ensure SVG files have `.svg` extension
 - Check file permissions
+
+**"Invalid SVG file names" / "Invalid font or SVG file names"**
+
+- Rename the listed files using only letters, numbers, `-` and `_` (see [Naming Rules](#naming-rules))
 
 **"Icon name conflicts detected"**
 
