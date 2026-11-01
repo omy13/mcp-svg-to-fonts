@@ -3,6 +3,7 @@ name: Publish
 on:
   release:
     types: [published]
+  workflow_dispatch:
 
 jobs:
   publish:
@@ -12,11 +13,11 @@ jobs:
       packages: write
       id-token: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: pnpm
@@ -24,13 +25,11 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # npmjs.com (unscoped name, with provenance)
-      - run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # npmjs.com via Trusted Publishing (OIDC): no token or 2FA code needed, provenance is added automatically
+      - run: npm publish --access public
 
       # GitHub Packages (requires a scoped name)
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           registry-url: https://npm.pkg.github.com
